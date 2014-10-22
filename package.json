@@ -1,0 +1,10 @@
+{
+  "id": "com.ninjablocks.chromecast",
+  "name": "Chromecast Driver",
+  "version": "0.1.0",
+  "description": "Uses castv2 protocol to communicate with Google Chromecast devices",
+  "main": "driver-go-chromecast",
+  "author": "Elliot Shepherd <elliot@ninjablocks.com>",
+  "license": "MIT",
+  "maxMemory": 5
+}
