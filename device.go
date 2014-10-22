@@ -1,12 +1,10 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"time"
 
 	"github.com/ninjasphere/go-castv2"
-	"github.com/ninjasphere/go-castv2/api"
 	"github.com/ninjasphere/go-castv2/controllers"
 	"github.com/ninjasphere/go-ninja/api"
 	"github.com/ninjasphere/go-ninja/channels"
@@ -58,9 +56,13 @@ func NewMediaPlayer(driver ninja.Driver, conn *ninja.Connection, id string, clie
 
 	device.receiver = controllers.NewReceiverController(client, "sender-0", "receiver-0")
 
-	response, err := device.receiver.GetStatus(time.Second * 5)
-
-	device.player.Log().Infof("Status response %v error:%e", response, err)
+	go func() {
+		for {
+			if err := device.onReceiverStatus(<-device.receiver.Incoming); err != nil {
+				device.player.Log().Warningf("Failed to update volume status: %s", err)
+			}
+		}
+	}()
 
 	return device, nil
 }
@@ -68,31 +70,31 @@ func NewMediaPlayer(driver ninja.Driver, conn *ninja.Connection, id string, clie
 func (d *MediaPlayer) applyVolume(state *channels.VolumeState) error {
 	d.player.Log().Infof("applyVolume called, volume %v", state)
 
-	response, err := d.receiver.SetVolume(&controllers.VolumePayload{
-		Volume: state.Level,
-		Mute:   state.Muted,
-	}, time.Second*5)
+	var err error
 
-	go func() {
-		d.updateStatus(response)
-	}()
+	// Chromecast doesn't like getting muted=true and a level at the same time.
+	if state.Muted != nil && *state.Muted == true {
+		_, err = d.receiver.SetVolume(&controllers.VolumePayload{
+			Muted: state.Muted,
+		}, time.Second*5)
+	} else {
+		_, err = d.receiver.SetVolume(&controllers.VolumePayload{
+			Level: state.Level,
+			Muted: state.Muted,
+		}, time.Second*5)
+	}
+
+	/*
+		  //TODO: Read the response? We always get updated instantly anyway?
+		  go func() {
+				d.updateStatus(response)
+			}()*/
 	return err
 }
 
-func (d *MediaPlayer) updateStatus(message *api.CastMessage) error {
-
-	// TODO: Read the rest of the status
-
-	var volume controllers.VolumePayload
-
-	err := json.Unmarshal([]byte(*message.PayloadUtf8), &volume)
-
-	if err != nil {
-		return err
-	}
-
+func (d *MediaPlayer) onReceiverStatus(status *controllers.StatusResponse) error {
 	return d.player.UpdateVolumeState(&channels.VolumeState{
-		Level: volume.Volume,
-		Muted: volume.Mute,
+		Level: status.Status.Volume.Level,
+		Muted: status.Status.Volume.Muted,
 	})
 }
