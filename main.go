@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/signal"
 )
@@ -12,7 +11,8 @@ func main() {
 	_, err := NewDriver()
 
 	if err != nil {
-		log.Fatalf("Failed to create driver: %s", err)
+		log.Errorf("Failed to create driver: %s", err)
+		return
 	}
 
 	c := make(chan os.Signal, 1)

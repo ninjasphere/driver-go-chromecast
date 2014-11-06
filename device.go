@@ -74,11 +74,11 @@ func (d *MediaPlayer) applyVolume(state *channels.VolumeState) error {
 
 	// Chromecast doesn't like getting muted=true and a level at the same time.
 	if state.Muted != nil && *state.Muted == true {
-		_, err = d.receiver.SetVolume(&controllers.VolumePayload{
+		_, err = d.receiver.SetVolume(&controllers.Volume{
 			Muted: state.Muted,
 		}, time.Second*5)
 	} else {
-		_, err = d.receiver.SetVolume(&controllers.VolumePayload{
+		_, err = d.receiver.SetVolume(&controllers.Volume{
 			Level: state.Level,
 			Muted: state.Muted,
 		}, time.Second*5)

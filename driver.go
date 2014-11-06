@@ -1,20 +1,20 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"strings"
 	"time"
 
-	"github.com/armon/mdns"
 	"github.com/davecgh/go-spew/spew"
+	"github.com/jonaz/mdns"
 	"github.com/ninjasphere/go-castv2"
 	"github.com/ninjasphere/go-castv2/controllers"
 	"github.com/ninjasphere/go-ninja/api"
+	"github.com/ninjasphere/go-ninja/logger"
 	"github.com/ninjasphere/go-ninja/support"
 )
 
 var info = ninja.LoadModuleInfo("./package.json")
+var log = logger.GetLogger(info.Name)
 
 type Driver struct {
 	support.DriverSupport
@@ -38,20 +38,22 @@ func NewDriver() (*Driver, error) {
 }
 
 func (d *Driver) Start(_ interface{}) error {
-	log.Printf("Driver Starting")
+	log.Infof("Driver Starting")
 
-	castService := "_googlecast._tcp.local"
+	castService := "_googlecast._tcp"
 
 	// Make a channel for results and start listening
 	entriesCh := make(chan *mdns.ServiceEntry, 4)
 	go func() {
 		for entry := range entriesCh {
 
+			log.Debugf("Found mdns service: %v", entry)
+
 			if !strings.Contains(entry.Name, castService) {
 				return
 			}
 
-			fmt.Printf("Got new chromecast: %v\n", entry)
+			log.Infof("Got new chromecast: %v", entry)
 
 			client, err := castv2.NewClient(entry.Addr, entry.Port)
 
@@ -78,12 +80,8 @@ func (d *Driver) Start(_ interface{}) error {
 	}()
 
 	go func() {
-		mdns.Query(&mdns.QueryParam{
-			Service: castService,
-			Domain:  "local",
-			Timeout: time.Second * 30,
-			Entries: entriesCh,
-		})
+		// Start the lookup
+		mdns.Lookup(castService, entriesCh)
 	}()
 
 	return nil
