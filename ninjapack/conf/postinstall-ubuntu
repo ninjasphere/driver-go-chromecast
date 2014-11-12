@@ -1,1 +1,1 @@
-nservice driver-go-chromecast start
+nservice -q driver-go-chromecast start

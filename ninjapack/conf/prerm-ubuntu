@@ -1,1 +1,1 @@
-nservice driver-go-chromecast stop
+nservice -q driver-go-chromecast stop
