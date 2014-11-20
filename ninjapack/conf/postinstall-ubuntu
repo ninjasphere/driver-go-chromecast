@@ -1,2 +1,2 @@
-/opt/ninjablocks/bin/nservice -q driver-go-chromecast stop
-/opt/ninjablocks/bin/nservice -q driver-go-chromecast start
+/opt/ninjablocks/bin/nservice -q driver-go-chromecast stop || true
+/opt/ninjablocks/bin/nservice -q driver-go-chromecast start || true
