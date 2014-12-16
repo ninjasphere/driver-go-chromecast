@@ -6,5 +6,5 @@
   "main": "driver-go-chromecast",
   "author": "Elliot Shepherd <elliot@ninjablocks.com>",
   "license": "MIT",
-  "maxMemory": 5
+  "maxMemory": 10
 }
