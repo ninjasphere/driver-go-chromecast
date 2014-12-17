@@ -4,9 +4,13 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"time"
 )
 
 func main() {
+
+	// In case it crash loops =))
+	time.Sleep(time.Second * 10)
 
 	_, err := NewDriver()
 

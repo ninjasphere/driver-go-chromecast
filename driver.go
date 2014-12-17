@@ -2,12 +2,9 @@ package main
 
 import (
 	"strings"
-	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/jonaz/mdns"
 	"github.com/ninjasphere/go-castv2"
-	"github.com/ninjasphere/go-castv2/controllers"
 	"github.com/ninjasphere/go-ninja/api"
 	"github.com/ninjasphere/go-ninja/logger"
 	"github.com/ninjasphere/go-ninja/support"
@@ -62,20 +59,6 @@ func (d *Driver) Start(_ interface{}) error {
 			if err != nil {
 				log.Fatalf("Failed to connect to chromecast %s", entry.Addr)
 			}
-
-			//_ = controllers.NewHeartbeatController(client, "Tr@n$p0rt-0", "Tr@n$p0rt-0")
-
-			heartbeat := controllers.NewHeartbeatController(client, "sender-0", "receiver-0")
-			heartbeat.Start()
-
-			connection := controllers.NewConnectionController(client, "sender-0", "receiver-0")
-			connection.Connect()
-
-			receiver := controllers.NewReceiverController(client, "sender-0", "receiver-0")
-
-			response, err := receiver.GetStatus(time.Second * 5)
-
-			spew.Dump("Status response", response, err)
 		}
 	}()
 
