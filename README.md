@@ -10,19 +10,19 @@
 ---
 
 
-## Introduction
+### Introduction
 This is a driver for the Google Chromecast, allowing it to be used as part of Ninja Sphere.
 
 It currently only supports applications that export the "urn:x-cast:com.google.cast.media" namespace, though that will be expanded as other namespaces are found and documented.
 
-## Supported Sphere Protocols
+### Supported Sphere Protocols
 
 | Name | URI | Supported Events | Supported Methods |
 | ------ | ------------- | ---- | ----------- |
 | volume | [http://schema.ninjablocks.com/protocol/volume](https://github.com/ninjasphere/schemas/blob/master/protocol/volume.json) | set, volumeUp, volumeDown, mute, unmute, toggleMute | state |
 | media-control | [http://schema.ninjablocks.com/protocol/media-control](https://github.com/ninjasphere/schemas/blob/master/protocol/media-control.json) | play, pause, togglePlay  | playing, paused, stopped, buffering, busy, idle, inactive |
 
-### To Do
+#### To Do
 * Add the *media* protocol, to gain media meta-data and play position/seeking.
 
 * Finish the *media-control* protocol support, adding next/previous/stop etc.
@@ -33,26 +33,26 @@ It currently only supports applications that export the "urn:x-cast:com.google.c
 
 * Expand support for other applications, especially to pull extra meta-data (i.e. YouTube)
 
-### Can't Do
+#### Can't Do
 * Owing to private APIs, the Netflix application can't currently be supported.
 
-## Requirements
+### Requirements
 
 * Go 1.3
 
-## Dependencies
+### Dependencies
 
 https://github.com/ninjasphere/go-castv2
 
-## Building
+### Building
 
 This project can be built with `go build`, but a makefile is also provided.
 
-## Running
+### Running
 
 `DEBUG=* ./driver-go-chromecast`
 
-## Options
+### Options
 
 The usual Ninja Sphere configuration and parameters apply, but these are the most useful during development.
 
@@ -60,16 +60,16 @@ The usual Ninja Sphere configuration and parameters apply, but these are the mos
 * `--mqtt.host=HOST` - Override default mqtt host
 * `--mqtt.port=PORT` - Override default mqtt host
 
-## More Information
+### More Information
 
 More information can be found on the [project site](http://github.com/ninjasphere/driver-go-chromecase) or by visiting the Ninja Blocks [forums](https://discuss.ninjablocks.com).
 
-## Contributing Changes
+### Contributing Changes
 
 To contribute code changes to the project, please clone the repository and submit a pull-request ([What does that mean?](https://help.github.com/articles/using-pull-requests/)).
 
-## License
+### License
 This project is licensed under the MIT license, a copy of which can be found in the [LICENSE](LICENSE) file.
 
-## Copyright
+### Copyright
 This work is Copyright (c) 2014-2015 - Ninja Blocks Inc.
