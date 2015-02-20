@@ -1,4 +1,4 @@
-// +build !release
+// +build release
 
 package main
 
@@ -7,12 +7,12 @@ import (
 )
 
 var (
-	BugsnagKey = "00000000000000000000000000000000" // set by build procedure
+	BugsnagKey = "" // set by build procedure
 )
 
 func init() {
 	bugsnag.Configure(bugsnag.Configuration{
 		APIKey:       BugsnagKey,
-		ReleaseStage: "development",
+		ReleaseStage: "production",
 	})
 }
