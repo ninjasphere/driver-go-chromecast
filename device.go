@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/ninjasphere/go-castv2"
@@ -19,18 +18,24 @@ type MediaPlayer struct {
 	media    *controllers.MediaController
 }
 
-func NewMediaPlayer(driver ninja.Driver, conn *ninja.Connection, id string, client *castv2.Client) (*MediaPlayer, error) {
-	name := fmt.Sprintf("Chromecast %s", id)
+func NewMediaPlayer(driver ninja.Driver, conn *ninja.Connection, info map[string]string, client *castv2.Client) (*MediaPlayer, error) {
+
+	name := info["fn"]
+	sigs := map[string]string{
+		"ninja:manufacturer": "Google",
+		"ninja:productName":  "Chromecast",
+		"ninja:thingType":    "mediaplayer",
+	}
+
+	for k, v := range info {
+		sigs["chromecast:"+k] = v
+	}
 
 	player, err := devices.CreateMediaPlayerDevice(driver, &model.Device{
-		NaturalID:     id,
-		NaturalIDType: "mdns",
+		NaturalID:     info["id"],
+		NaturalIDType: "chromecast",
 		Name:          &name,
-		Signatures: &map[string]string{
-			"ninja:manufacturer": "Google",
-			"ninja:productName":  "Chromecast",
-			"ninja:thingType":    "mediaplayer",
-		},
+		Signatures:    &sigs,
 	}, conn)
 
 	if err != nil {
